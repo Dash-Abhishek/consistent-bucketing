@@ -1,24 +1,24 @@
-# Splitter
+# gbucket 
 
-A simple and fast golang library for weighted routing, bucketing, which uses consistent hashing, to allocate buckets.
-This can be used in loadbancers to route traffic i.e weighted routing stategy, in multi-variant test to allocate a variant to users.
+A simple and fast golang library for weighted bucketing, which uses consistent hashing, to allocate buckets.
+This can be used in load balancers to route traffic i.e weighted routing strategy, in multi-variant test to allocate a variant to users.
 
 
 
 ## Install
 ```sh
-  go get github.com/Dash-Abhishek/splitter 
+  go get github.com/Dash-Abhishek/gbucket
 ```
 
 
 Example Usage
 ```sh
   
-bucket1 := splitter.Bucket{Percentage: 60, Bucketname: "A"}
-bucket2 := splitter.Bucket{Percentage: 10, Bucketname: "B"}
+bucket1 := gbucket.Bucket{Percentage: 60, Bucketname: "A"}
+bucket2 := gbucket.Bucket{Percentage: 10, Bucketname: "B"}
 buckets := make([]splitter.Bucket, 0)
 buckets = append(buckets, bucket1, bucket2)
-allocs, err := splitter.CreateAllocations(&buckets)
+allocs, err := gbucket.CreateAllocations(&buckets)
 if err == nil {
   bucketName := allocs.GetBucketAllocation(<userID>)
   fmt.Println("bucket", bucketName)

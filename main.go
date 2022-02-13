@@ -1,4 +1,4 @@
-package splitter
+package gbucket
 
 import (
 	"errors"

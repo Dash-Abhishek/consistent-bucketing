@@ -1,4 +1,4 @@
-module github.com/Dash-Abhishek/splitter
+module github.com/Dash-Abhishek/gbucket
 
 go 1.17
 
