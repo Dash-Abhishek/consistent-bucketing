@@ -1,6 +1,6 @@
 # Splitter
 
-A simple and fast golang implementation for weighted routing, bucketing, which uses consistent hashing, to allocate buckets.
+A simple and fast golang library for weighted routing, bucketing, which uses consistent hashing, to allocate buckets.
 This can be used in loadbancers to route traffic i.e weighted routing stategy, in multi-variant test to allocate a variant to users.
 
 
