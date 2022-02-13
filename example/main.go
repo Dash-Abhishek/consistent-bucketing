@@ -14,7 +14,7 @@ func main() {
 	bucketList = append(bucketList, gbucket.Bucket{Percentage: 50, Bucketname: "A"})
 	bucketList = append(bucketList, gbucket.Bucket{Percentage: 50, Bucketname: "B"})
 
-	allocations, err := gbucket.CreateAllocations(&bucketList)
+	allocations, err := gbucket.CreateAllocations(bucketList)
 	if err == nil {
 
 		fmt.Println(allocations)

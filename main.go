@@ -34,11 +34,11 @@ func generteHash(Id string) int {
 }
 
 // function to validate if total percentage is less than or equal to 100
-func validatePercentageSplit(buckets *[]Bucket) bool {
+func validatePercentageSplit(buckets []Bucket) bool {
 
 	totalPercentage := 0.00
 
-	for _, bucket := range *buckets {
+	for _, bucket := range buckets {
 
 		totalPercentage = totalPercentage + bucket.Percentage
 	}
@@ -47,23 +47,17 @@ func validatePercentageSplit(buckets *[]Bucket) bool {
 
 }
 
-// 5% of 100 is 5/100 * 100 = 5
-// 5% of 1000 is 5/100 * 1000 = 50
-// 50% of 1000 is 50/100 * 1000 = 500
-// 25.5 of 1000 is 25.5/100 * 1000 = 255
-// 25.55 of 1000 is 25.55/100 * 1000 = 255.5
-// 25.55 of 10000 id 25.55/100 * 10000 = 2555
-// function to create allocation mappings for bucket allocation
-// returns pointer to allocation and err if any
-func CreateAllocations(buckets *[]Bucket) (*Allocations, error) {
+// Creates allocation mappings for bucket allocation
+// returns allocation and err if any
+func CreateAllocations(buckets []Bucket) (*Allocations, error) {
 
 	if !validatePercentageSplit(buckets) {
 		return nil, errors.New("total percentage should be <= 100")
 	}
 
-	mappings := make([]Allocation, len(*buckets))
+	mappings := make([]Allocation, len(buckets))
 	currentmin := 0
-	for index, bucket := range *buckets {
+	for index, bucket := range buckets {
 
 		maxLimit := bucket.Percentage / 100 * 10000
 		maxrange := currentmin + int(maxLimit)
