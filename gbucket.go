@@ -2,8 +2,14 @@ package gbucket
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/spaolacci/murmur3"
+)
+
+const (
+	seed  = 1000
+	slots = 1000
 )
 
 type Bucket struct {
@@ -25,11 +31,11 @@ type Allocation struct {
 // Generates hash Value between 0-10000
 func generteHash(Id string) int {
 
-	hasher := murmur3.New32WithSeed(10000)
+	hasher := murmur3.New32WithSeed(seed)
 	hasher.Write([]byte(Id))
 
 	// generates int hash value in range of 0-10000
-	hashval := int(hasher.Sum32() % 10000)
+	hashval := int(hasher.Sum32() % slots)
 	return hashval
 }
 
@@ -90,4 +96,53 @@ func (all *Allocations) GetBucketAllocation(Id string) string {
 	}
 	return result
 
+}
+
+var ErrUnsupportedKeyType = errors.New("unsupported key type")
+
+type Hasher interface {
+	Hash(interface{}) (int, error)
+}
+
+// Default implementation of Hasher interface,
+// which can hash key of string or int types
+type DefaultHasher struct{}
+
+func (dh *DefaultHasher) Hash(key interface{}) (int, error) {
+	switch k := key.(type) {
+	case string:
+		h := murmur3.New32WithSeed(seed)
+		_, err := h.Write([]byte(k))
+		if err != nil {
+			return -1, err
+		}
+		return int(h.Sum32()), nil
+	case int:
+		return k, nil
+	default:
+		return -1, ErrUnsupportedKeyType
+	}
+}
+
+// AllAllocBktUsingHasher tries to allocate a bucket to the specified key using
+func (a *Allocations) AllocBktUsingHasher(h Hasher, key interface{}) (string, error) {
+	// use default hasher if no custom hasher was provided
+	if h == nil {
+		h = &DefaultHasher{}
+	}
+
+	// calculate the hash and bound it in available slots
+	hash, err := h.Hash(key)
+	if err != nil {
+		return "", err
+	}
+	hash = hash % slots
+
+	for _, alloc := range a.Mappings {
+		if hash >= alloc.MinRange && hash <= alloc.MaxRange {
+			return alloc.Name, nil
+		}
+	}
+
+	return "", fmt.Errorf("unable to allocate a bucket to `%v`", key)
 }
