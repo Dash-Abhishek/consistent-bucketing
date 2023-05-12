@@ -11,7 +11,7 @@ This can be used in load balancers to route traffic i.e weighted routing strateg
 ```
 
 
-Example Usage
+Example Usage.
 ```sh
   
 bucket1 := gbucket.Bucket{Percentage: 60, Bucketname: "A"}
